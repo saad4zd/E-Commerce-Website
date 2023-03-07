@@ -1,2 +1,2 @@
 # E-Commerce-Website
-Web Programmin Course Project
+Web Programming Course Project
