@@ -11,5 +11,16 @@ const db = {};
 db.sequelize = sequelize;
 db.admin = require('./adminModel')(sequelize);
 db.user = require('./userModel')(sequelize);
+db.order = require('./ordersModel')(sequelize);
+db.product = require('./productsModel')(sequelize);
+db.cart = require('./cartModel')(sequelize);
+db.feedback = require('./feedbackModel')(sequelize);
+
+db.user.hasMany(db.order);
+db.product.hasMany(db.order);
+db.user.hasOne(db.cart);
+db.product.hasMany(db.cart);
+db.user.hasMany(db.feedback);
+db.product.hasMany(db.feedback);
 
 module.exports = db;

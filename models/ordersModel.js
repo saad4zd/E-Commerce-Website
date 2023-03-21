@@ -1,26 +1,18 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
+const { DataTypes, Model } = require('sequelize');
 
-let ordersModel = (Sequelize) => {
-    class Orders extends Model { };
-    Orders.init({
-        order_id: {
+let ordersModel = (sequelize) => {
+    class Order extends Model { };
+    Order.init({
+        id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
-        },
-        date: {
-            type: DataTypes.DATEONLY,
-            validate: {
-                notNull: true,
-                isDate: true
-            }
         }
     }, {
         sequelize,
-        modelName: 'orders',
-        timestamps: false
+        modelName: 'orders'
     });
-    return Orders;
+    return Order;
 };
 
 module.exports = ordersModel;
