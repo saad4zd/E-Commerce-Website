@@ -9,8 +9,9 @@ const sequelize = new Sequelize(
 const db = {};
 
 db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 db.admin = require('./adminModel')(sequelize);
-db.user = require('./userModel')(sequelize);
+db.user = require('./userModel')(sequelize, Sequelize);
 db.order = require('./ordersModel')(sequelize);
 db.product = require('./productsModel')(sequelize);
 db.cart = require('./cartModel')(sequelize);

@@ -1,10 +1,11 @@
-const { DataTypes, Model } = require('sequelize');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-let userModel = (sequelize) => {
-    class User extends Model { };
+let userModel = (sequelize, Sequelize) => {
+    class User extends Sequelize.Model { };
     User.init({
         name: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
             allowNull: false,
             validate: {
                 min: 5,
@@ -12,7 +13,7 @@ let userModel = (sequelize) => {
             }
         },
         email: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
             allowNull: false,
             primaryKey: true,
             validate: {
@@ -20,18 +21,18 @@ let userModel = (sequelize) => {
             }
         },
         password: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
             allowNull: false
         },
         address: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
             allowNull: false,
             validate: {
                 max: 100
             }
         },
         contact: {
-            type: DataTypes.INTEGER,
+            type: Sequelize.INTEGER,
             allowNull: false,
             unique: true,
             validate: {
@@ -41,9 +42,21 @@ let userModel = (sequelize) => {
     }, {
         sequelize,
         modelName: 'user',
-        timestamps: false
+        timestamps: false,
+        hooks: {
+            beforeCreate: async (user) => {
+                let salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash(user.password, salt);
+            }
+        }
     });
+
+    User.prototype.token = function () {
+        return jwt.sign({ emial: this.email, name: this.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME });
+    }
+
     return User;
 };
+
 
 module.exports = userModel;
