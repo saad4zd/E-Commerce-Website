@@ -1,20 +1,20 @@
-exports.viewProducts = (req, res) => {
+const viewProducts = (req, res) => {
     res.send("View Products Page");
 };
 
-exports.addProducts = (req, res) => {
+const addProducts = (req, res) => {
     res.send("Add Products Page");
 };
 
-exports.updateProducts = (req, res) => {
+const updateProducts = (req, res) => {
     res.send("Update Products Page");
 };
 
-exports.removeProducts = (req, res) => {
+const removeProducts = (req, res) => {
     res.send("Remove Products Page");
 };
 
-exports.getSingleProduct = (req, res) => {
+const getSingleProduct = (req, res) => {
     res.send('<h1>User single Page</h1>');
 };
 

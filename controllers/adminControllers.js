@@ -1,12 +1,12 @@
-exports.login = (req, res) => {
+const login = (req, res) => {
     res.send("Login Page");
 };
 
-exports.dashboard = (req, res) => {
+const dashboard = (req, res) => {
     res.send("Dashboard Page");
 };
 
-exports.addAdmin = (req, res) => {
+const addAdmin = (req, res) => {
     res.send("Add Admin Page");
 };
 
