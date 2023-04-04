@@ -1,5 +1,17 @@
-const viewProducts = (req, res) => {
-    res.send("View Products Page");
+const { Op, product } = require('../models');
+
+const viewProducts = async (req, res) => {
+    let { page, brand, price, sort, sorder } = req.query;
+    if (price) {
+        priceRange = price.split(',');
+    }
+    let products = await product.findAll({
+        where: {
+            brand: brand || { [Op.ne]: null },
+            price: price ? { [Op.gte]: Number(priceRange[0]), [Op.lte]: Number(priceRange[1]) } : { [Op.ne]: null }
+        }
+    });
+    res.status(200).json({ length: products.length, products });
 };
 
 const addProducts = (req, res) => {
