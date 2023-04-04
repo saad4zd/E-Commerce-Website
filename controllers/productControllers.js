@@ -5,11 +5,17 @@ const viewProducts = async (req, res) => {
     if (price) {
         priceRange = price.split(',');
     }
+    if (sort) {
+        sortFilter = sort.split(',');
+
+    }
     let products = await product.findAll({
         where: {
             brand: brand || { [Op.ne]: null },
             price: price ? { [Op.gte]: Number(priceRange[0]), [Op.lte]: Number(priceRange[1]) } : { [Op.ne]: null }
-        }
+        },
+        order: sort ? sortFilter.map((attri) => [attri, sorder]) : null,
+        limit: 5, offset: (Number(page) - 1) * 5
     });
     res.status(200).json({ length: products.length, products });
 };
