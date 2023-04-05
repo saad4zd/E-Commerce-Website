@@ -1,7 +1,7 @@
 const { Op, product } = require('../models');
 
 const viewProducts = async (req, res) => {
-    let { page, brand, price, sort, sorder } = req.query;
+    let { page, brand, price, sort, sorder, search } = req.query;
     if (price) {
         priceRange = price.split(',');
     }
@@ -12,7 +12,8 @@ const viewProducts = async (req, res) => {
     let products = await product.findAll({
         where: {
             brand: brand || { [Op.ne]: null },
-            price: price ? { [Op.gte]: Number(priceRange[0]), [Op.lte]: Number(priceRange[1]) } : { [Op.ne]: null }
+            price: price ? { [Op.gte]: Number(priceRange[0]), [Op.lte]: Number(priceRange[1]) } : { [Op.ne]: null },
+            name: search ? { [Op.like]: `%${search}%` } : { [Op.ne]: null }
         },
         order: sort ? sortFilter.map((attri) => [attri, sorder]) : null,
         limit: 5, offset: (Number(page) - 1) * 5
