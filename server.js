@@ -14,6 +14,7 @@ let orderRoutes = require('./routes/orderRoutes');
 let productRoutes = require('./routes/productRoutes');
 let authentication = require('./middlewares/authentication');
 let notFound = require('./middlewares/notFound');
+let errorHandler = require('./middlewares/errorHandler');
 
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/user', userRoutes);
@@ -22,6 +23,7 @@ app.use('/api/v1/cart', authentication, cartRoutes);
 app.use('/api/v1/feedback', authentication, feedbackRoutes);
 app.use('/api/v1/order', authentication, orderRoutes);
 app.use(notFound);
+app.use(errorHandler);
 
 let start = async () => {
     await require('./models').sequelize.sync().then(() => console.log('Connected to Database')).catch((err) => console.log(`Failed Error : ${err.message}`));

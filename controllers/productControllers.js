@@ -1,7 +1,13 @@
 const { Op, product } = require('../models');
+const asyncWrapper = require('../middlewares/asyncWrapper');
+const { createError } = require('../errors/customError');
+const { StatusCodes } = require('http-status-codes');
 
-const viewProducts = async (req, res) => {
+const viewProducts = asyncWrapper(async (req, res, next) => {
     let { page, brand, price, sort, sorder, search } = req.query;
+    if (!page) {
+        return next(createError(StatusCodes.BAD_REQUEST, 'url is not correct'));
+    }
     if (price) {
         priceRange = price.split(',');
     }
@@ -19,6 +25,10 @@ const viewProducts = async (req, res) => {
         limit: 5, offset: (Number(page) - 1) * 5
     });
     res.status(200).json({ length: products.length, products });
+});
+
+const getSingleProduct = (req, res) => {
+    res.send('<h1>User single Page</h1>');
 };
 
 const addProducts = (req, res) => {
@@ -31,10 +41,6 @@ const updateProducts = (req, res) => {
 
 const removeProducts = (req, res) => {
     res.send("Remove Products Page");
-};
-
-const getSingleProduct = (req, res) => {
-    res.send('<h1>User single Page</h1>');
 };
 
 module.exports = { viewProducts, addProducts, updateProducts, removeProducts, getSingleProduct };
