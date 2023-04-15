@@ -10,7 +10,7 @@ const db = {};
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-db.admin = require('./adminModel')(sequelize);
+db.admin = require('./adminModel')(sequelize, Sequelize);
 db.user = require('./userModel')(sequelize, Sequelize);
 db.order = require('./ordersModel')(sequelize);
 db.product = require('./productsModel')(sequelize);
