@@ -2,7 +2,6 @@ const { Op, product } = require('../models');
 const asyncWrapper = require('../middlewares/asyncWrapper');
 const { createError } = require('../errors/customError');
 const { StatusCodes } = require('http-status-codes');
-const { where } = require('sequelize');
 
 const viewProducts = asyncWrapper(async (req, res, next) => {
     let { page, brand, price, sort, sorder, search } = req.query;
@@ -14,7 +13,6 @@ const viewProducts = asyncWrapper(async (req, res, next) => {
     }
     if (sort) {
         sortFilter = sort.split(',');
-
     }
     let products = await product.findAll({
         where: {
@@ -29,37 +27,23 @@ const viewProducts = asyncWrapper(async (req, res, next) => {
 });
 
 const getSingleProduct = asyncWrapper(async (req, res, next) => {
-    let product = await product.findAll({ where: { id: Number(req.params.id) } });
-    res.status(StatusCodes.OK).json(product);
+    let prod = await product.findOne({ where: { id: Number(req.params.id) } });
+    res.status(StatusCodes.OK).json(prod);
 });
 
 const addProducts = asyncWrapper(async (req, res, next) => {
-    let { name, brand, price, description, quantity, imageurl } = req.body;
-
-    if (!name || !brand | !price || !description || !quantity || !imageurl) {
-        throw createError(StatusCodes.BAD_REQUEST, 'Fill All The Entries');
-    }
-
-    let product = await product.create({ name, brand, price, description, quantity, imageurl });
-    res.status(StatusCodes.CREATED).json(product);
+    let prod = await product.create(req.body);
+    res.status(StatusCodes.CREATED).json(prod);
 });
 
 const updateProducts = asyncWrapper(async (req, res, next) => {
-    let { name, brand, price, description, quantity, imageurl } = req.body;
-
-    if (!name || !brand | !price || !description || !quantity || !imageurl) {
-        throw createError(StatusCodes.BAD_REQUEST, 'Fill All The Entries');
-    }
-
-    let product = await product.update(
-        { name, brand, price, description, quantity, imageurl },
-        { where: { name: req.name } });
-    res.status(StatusCodes.OK).json(product);
+    let prod = await product.update(req.body, { where: { id: Number(req.params.id) } });
+    res.status(StatusCodes.OK).json(prod);
 });
 
 const removeProducts = asyncWrapper(async (req, res, next) => {
-    let product = await product.destroy({ where: { id: Number(req.params.id) } });
-    res.status(StatusCodes.OK).json(product);
+    let prod = await product.destroy({ where: { id: Number(req.params.id) } });
+    res.status(StatusCodes.OK).json(prod);
 });
 
 module.exports = { viewProducts, addProducts, updateProducts, removeProducts, getSingleProduct };

@@ -1,41 +1,30 @@
-const { Op, ordersModel } = require('../models');
+const { Op, order } = require('../models');
 const asyncWrapper = require('../middlewares/asyncWrapper');
 const { createError } = require('../errors/customError');
 const { StatusCodes } = require('http-status-codes');
-const { where } = require('sequelize');
 
-
-let order = asyncWrapper(async (req, res, next) => {
+let createOrder = asyncWrapper(async (req, res, next) => {
     let { userEmail, productId } = req.body;
-    if (!userEmail || !productId) {
-        throw createError(StatusCodes.BAD_REQUEST, 'Fill All Entries');
+    if (!userEmail) {
+        throw createError(StatusCodes.BAD_REQUEST, 'User Email is missing');
     }
-    let status = "Not Placed";
-    let order = await ordersModel.create({ status ,userEmail, productId });
-    res.status(StatusCodes.CREATED).json(order);
+    if (!productId) {
+        throw createError(StatusCodes.BAD_REQUEST, 'Product Id is missing');
+    }
+    let ordr = await order.create(req.body);
+    res.status(StatusCodes.CREATED).json(ordr);
 });
 
 const orderDetails = asyncWrapper(async (req, res, next) => {
-    let { status, userEmail } = req.query;
-
-    let order = await ordersModel.findAll({
-        where: {
-            status: status || { [Op.ne]: null },
-            userEmail: { [Op.like]: `%${userEmail}%` } || { [Op.ne]: null }
-        },
-    });
-    res.status(StatusCodes.OK).json({ length: order.length, order });
+    let ordr = await order.findOne({ where: { id: Number(req.params.id) } });
+    res.status(StatusCodes.OK).json(ordr);
 });
 
 let orderHistory = asyncWrapper(async (req, res, next) => {
-    let { userEmail } = req.query;
-
-    let order = await ordersModel.findAll({
-        where: {
-            userEmail: { [Op.like]: `%${userEmail}%` } || { [Op.ne]: null }
-        },
+    let ordr = await order.findAll({
+        where: { userEmail: req.params.userEmail }
     });
-    res.status(StatusCodes.OK).json({ length: order.length, order });
+    res.status(StatusCodes.OK).json({ length: ordr.length, ordr });
 });
 
-module.exports = { order, orderHistory, orderDetails };
+module.exports = { createOrder, orderHistory, orderDetails };

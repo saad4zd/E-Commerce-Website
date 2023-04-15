@@ -1,6 +1,5 @@
 const { admin } = require('../models');
 const { StatusCodes } = require('http-status-codes');
-const { createError } = require('../errors/customError');
 const asyncWrapper = require('../middlewares/asyncWrapper');
 
 let viewAdmins = asyncWrapper(async (req, res, next) => {

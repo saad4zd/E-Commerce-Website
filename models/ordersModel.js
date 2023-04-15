@@ -1,18 +1,16 @@
-const { DataTypes, Model } = require('sequelize');
-
-let ordersModel = (sequelize) => {
-    class Order extends Model { };
+let ordersModel = (sequelize, Sequelize) => {
+    class Order extends Sequelize.Model { };
     Order.init({
         id: {
-            type: DataTypes.INTEGER,
+            type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        status:{
-            type:DataTypes.STRING,
+        status: {
+            type: Sequelize.STRING,
+            allowNull: false,
             validate: {
-                notNull: true,
-                notEmpty: true,
+                isIn: [['pending', 'fulfill', 'canceled']]
             }
         }
     }, {

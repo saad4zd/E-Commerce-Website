@@ -1,18 +1,26 @@
-const { user } = require('../models');
+const { Op, user } = require('../models');
+const asyncWrapper = require('../middlewares/asyncWrapper');
+const { StatusCodes } = require('http-status-codes');
 
-let home = (req, res) => {
-    res.send('<h1>User Home Page</h1>');
-};
-
-let login = async (req, res) => {
+let login = asyncWrapper(async (req, res, next) => {
     let data = await user.findOne({ where: { email: req.body.email } });
     let token = data.token();
-    res.status(200).json({ data, token });
-};
+    res.status(StatusCodes.OK).json({ data, token });
+});
 
-let signUp = async (req, res) => {
+let signUp = asyncWrapper(async (req, res, next) => {
     let data = await user.create(req.body);
-    res.status(201).json(data);
-};
+    res.status(StatusCodes.CREATED).json(data);
+});
 
-module.exports = { home, login, signUp };
+let getAllUsers = asyncWrapper(async (req, res, next) => {
+    let users = await user.findAll();
+    res.status(StatusCodes.OK).json(users);
+});
+
+let getSingleUser = asyncWrapper(async (req, res, next) => {
+    let usr = await user.findOne({ where: { email: req.params.email } });
+    res.status(StatusCodes.OK).json(usr);
+});
+
+module.exports = { getAllUsers, getSingleUser, login, signUp };
