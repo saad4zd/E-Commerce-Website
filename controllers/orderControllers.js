@@ -6,37 +6,36 @@ const { where } = require('sequelize');
 
 
 let order = asyncWrapper(async (req, res, next) => {
-    let {userEmail, productId} = req.query;
-    if (!userEmail||!productId) {
+    let { userEmail, productId } = req.body;
+    if (!userEmail || !productId) {
         throw createError(StatusCodes.BAD_REQUEST, 'Fill All Entries');
     }
-
-    let order = await ordersModel.create({ userEmail, productId });
+    let status = "Not Placed";
+    let order = await ordersModel.create({ status ,userEmail, productId });
     res.status(StatusCodes.CREATED).json(order);
 });
 
 const orderDetails = asyncWrapper(async (req, res, next) => {
-    let { createdAt, userEmail } = req.query;
-   
+    let { status, userEmail } = req.query;
+
     let order = await ordersModel.findAll({
         where: {
-            createdAt: createdAt || { [Op.ne]: null },
+            status: status || { [Op.ne]: null },
             userEmail: { [Op.like]: `%${userEmail}%` } || { [Op.ne]: null }
         },
     });
-    res.status(200).json({ length: order.length, order });
+    res.status(StatusCodes.OK).json({ length: order.length, order });
 });
 
 let orderHistory = asyncWrapper(async (req, res, next) => {
-    let { createdAt, userEmail } = req.query;
-   
+    let { userEmail } = req.query;
+
     let order = await ordersModel.findAll({
         where: {
-            createdAt: createdAt || { [Op.ne]: null },
             userEmail: { [Op.like]: `%${userEmail}%` } || { [Op.ne]: null }
         },
     });
-    res.status(200).json({ length: order.length, order });
+    res.status(StatusCodes.OK).json({ length: order.length, order });
 });
 
 module.exports = { order, orderHistory, orderDetails };

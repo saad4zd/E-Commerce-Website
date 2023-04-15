@@ -7,6 +7,13 @@ let ordersModel = (sequelize) => {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
+        },
+        status:{
+            type:DataTypes.STRING,
+            validate: {
+                notNull: true,
+                notEmpty: true,
+            }
         }
     }, {
         sequelize,

@@ -15,22 +15,13 @@ let createFeedback = asyncWrapper(async (req, res, next) => {
     res.status(StatusCodes.CREATED).json(Feedback);
 });
 
-let getFeedback = asyncWrapper(async (req, res, next) => {
-    if(!req.params.id){
-        throw createError(StatusCodes.BAD_REQUEST, 'No ID Found');
-    }
-
-    let Feedback = await feedback.findAll({ where: { id: Number(req.params.id) } });
-    res.status(StatusCodes.OK).json(Feedback);
-});
-
 const viewFeedbacks = asyncWrapper(async (req, res, next) => {
     let { page, productId, userEmail } = req.query;
 
     if (!page) {
         return next(createError(StatusCodes.BAD_REQUEST, 'url is not correct'));
     }
-   
+
     let feedbacks = await feedback.findAll({
         where: {
             productId: productId || { [Op.ne]: null },
@@ -41,4 +32,4 @@ const viewFeedbacks = asyncWrapper(async (req, res, next) => {
     res.status(200).json({ length: feedbacks.length, feedbacks });
 });
 
-module.exports = { createFeedback, getFeedback, viewFeedbacks };
+module.exports = { createFeedback, viewFeedbacks };

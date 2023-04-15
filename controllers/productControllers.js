@@ -25,12 +25,12 @@ const viewProducts = asyncWrapper(async (req, res, next) => {
         order: sort ? sortFilter.map((attri) => [attri, sorder]) : null,
         limit: 5, offset: (Number(page) - 1) * 5
     });
-    res.status(200).json({ length: products.length, products });
+    res.status(StatusCodes.OK).json({ length: products.length, products });
 });
 
 const getSingleProduct = asyncWrapper(async (req, res, next) => {
     let product = await product.findAll({ where: { id: Number(req.params.id) } });
-    res.status(StatusCodes.CREATED).json(product);
+    res.status(StatusCodes.OK).json(product);
 });
 
 const addProducts = asyncWrapper(async (req, res, next) => {
