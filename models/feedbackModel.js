@@ -18,8 +18,7 @@ let feedbackModel = (sequelize, Sequelize) => {
         }
     }, {
         sequelize,
-        modelName: 'feedbacks',
-        timestamps: false
+        modelName: 'feedbacks'
     });
     return Feedback;
 };

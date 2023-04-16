@@ -27,4 +27,22 @@ let orderHistory = asyncWrapper(async (req, res, next) => {
     res.status(StatusCodes.OK).json({ length: ordr.length, ordr });
 });
 
-module.exports = { createOrder, orderHistory, orderDetails };
+let getAllOrders = asyncWrapper(async (req, res, next) => {
+    let { page, productId, userEmail, status } = req.query;
+    if (!page) {
+        return next(createError(StatusCodes.BAD_REQUEST, 'url is not correct'));
+    }
+    let orders = await order.findAll({
+        where: {
+            productId: productId || { [Op.ne]: null },
+            userEmail: userEmail || { [Op.ne]: null },
+            status: status || { [Op.ne]: null }
+        },
+        order: [['createdAt', 'ASC']],
+        limit: 5, offset: (Number(page) - 1) * 5
+    });
+    let count = await order.count();
+    res.status(StatusCodes.OK).json({ count, orders });
+});
+
+module.exports = { createOrder, orderHistory, orderDetails, getAllOrders };

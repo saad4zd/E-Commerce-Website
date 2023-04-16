@@ -23,11 +23,13 @@ const viewFeedbacks = asyncWrapper(async (req, res, next) => {
     let feedbacks = await feedback.findAll({
         where: {
             productId: productId || { [Op.ne]: null },
-            userEmail: userEmail ? { [Op.like]: `%${userEmail}%` } : { [Op.ne]: null }
+            userEmail: userEmail || { [Op.ne]: null }
         },
+        order: [['createdAt', 'ASC']],
         limit: 5, offset: (Number(page) - 1) * 5
     });
-    res.status(200).json({ length: feedbacks.length, feedbacks });
+    let total = await feedback.count();
+    res.status(StatusCodes.OK).json({ count: total, length: feedbacks.length, feedbacks });
 });
 
 module.exports = { createFeedback, viewFeedbacks };

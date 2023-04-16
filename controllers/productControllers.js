@@ -23,7 +23,8 @@ const viewProducts = asyncWrapper(async (req, res, next) => {
         order: sort ? sortFilter.map((attri) => [attri, sorder]) : null,
         limit: 5, offset: (Number(page) - 1) * 5
     });
-    res.status(StatusCodes.OK).json({ length: products.length, products });
+    let total = await product.count();
+    res.status(StatusCodes.OK).json({ count: total, length: products.length, products });
 });
 
 const getSingleProduct = asyncWrapper(async (req, res, next) => {
